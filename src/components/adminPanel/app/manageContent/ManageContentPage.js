@@ -1,14 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { myBase } from '../../../../firebase/config';
+import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
 
 const db = myBase.firestore();
 
+const Input = styled('input')({
+  display: 'none',
+});
+
 export const ManageContentPage = () => {
-
   const [fileUrl, setFileUrl] = useState(null);
-  const [users, setUsers] = useState([]);
+  const [lot, setLot] = useState([]);
 
-  const onFileChange = async (e) => {
+  const fetchUsers = async () => {
+    const usersCollection = await db.collection('users').get();
+    setLot(
+      usersCollection.docs.map(doc => {
+        return doc.data();
+      }),
+    );
+  };
+
+  const onFileChange = async e => {
     const file = e.target.files[0];
     const storageRef = myBase.storage().ref();
     const fileRef = storageRef.child(file.name);
@@ -16,47 +33,60 @@ export const ManageContentPage = () => {
     setFileUrl(await fileRef.getDownloadURL());
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = async e => {
     e.preventDefault();
     const username = e.target.username.value;
+    const description = e.target.description.value;
+
     if (!username || !fileUrl) {
       return;
     }
-    await db.collection("users").doc(username).set({
+    await db.collection('users').doc(username).set({
       name: username,
       avatar: fileUrl,
+      description: description,
     });
+
+    await fetchUsers();
   };
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const usersCollection = await db.collection("users").get();
-      setUsers(
-        usersCollection.docs.map((doc) => {
-          return doc.data();
-        })
-      );
-    };
-    fetchUsers();
+  useEffect(async () => {
+    await fetchUsers();
   }, []);
 
   return (
     <>
       <form onSubmit={onSubmit}>
-        <input type="file" onChange={onFileChange} />
-        <input type="text" name="username" placeholder="NAME" />
+        <input type="file" multiple onChange={onFileChange} />
+
+        <TextField
+          id="standard-basic"
+          label="Name"
+          variant="standard"
+          type="text"
+          name="username"
+        />
+        <TextField
+          id="standard-basic"
+          label="Description"
+          variant="standard"
+          type="text"
+          name="description"
+        />
         <button>Submit</button>
       </form>
-      <ul>
-        {users.map((user) => {
+      <div>Gallery</div>
+      <div>
+        {lot.map(item => {
           return (
-            <li key={user.name}>
-              <img width="100" height="100" src={user.avatar} alt={user.name} />
-              <p>{user.name}</p>
-            </li>
+            <div key={item.name}>
+              <img width="400" src={item.avatar} alt={item.name} />
+              <p>name: {item.name}</p>
+              <p>description: {item?.description}</p>
+            </div>
           );
         })}
-      </ul>
+      </div>
     </>
   );
 };
