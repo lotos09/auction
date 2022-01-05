@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { myBase } from '../../../../firebase/config';
-import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
+
+import { TextField } from '@mui/material';
 
 const db = myBase.firestore();
-
-const Input = styled('input')({
-  display: 'none',
-});
 
 export const ManageContentPage = () => {
   const [fileUrl, setFileUrl] = useState(null);
   const [lot, setLot] = useState([]);
+  console.log(fileUrl);
+  const [previews, setPreviews] = useState([]);
 
   const fetchUsers = async () => {
     const usersCollection = await db.collection('users').get();
@@ -26,6 +22,15 @@ export const ManageContentPage = () => {
   };
 
   const onFileChange = async e => {
+    const fileList = Array.from(e.target.files);
+
+    const mappedFiles = fileList.map(file => ({
+      ...file,
+      preview: URL.createObjectURL(file),
+    }));
+
+    setPreviews(mappedFiles);
+    //the same url can be used from code below
     const file = e.target.files[0];
     const storageRef = myBase.storage().ref();
     const fileRef = storageRef.child(file.name);
@@ -57,7 +62,19 @@ export const ManageContentPage = () => {
   return (
     <>
       <form onSubmit={onSubmit}>
-        <input type="file" multiple onChange={onFileChange} />
+        <input
+          accept="image/*"
+          style={{ display: 'none' }}
+          id="raised-button-file"
+          multiple
+          type="file"
+          onChange={onFileChange}
+        />
+        <label htmlFor="raised-button-file">
+          <Button variant="contained" component="span">
+            Upload
+          </Button>
+        </label>
 
         <TextField
           id="standard-basic"
@@ -73,8 +90,13 @@ export const ManageContentPage = () => {
           type="text"
           name="description"
         />
-        <button>Submit</button>
+        <button variant="contained" component="span">
+          Submit
+        </button>
       </form>
+      {previews.map(file => (
+        <img key={file.preview} width="200" src={file.preview} />
+      ))}
       <div>Gallery</div>
       <div>
         {lot.map(item => {
