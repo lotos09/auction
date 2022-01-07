@@ -15,10 +15,10 @@ import Typography from '@mui/material/Typography';
 import { useContext } from 'react';
 import { Context } from '../../../index';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { CHAT_ROUTE, MAIN_PAGE_ROUTE, MANAGE_CONTENT_ROUTE } from '../../../untils/constants';
+import { CHAT_ROUTE, MAIN_PAGE_ROUTE, MANAGE_CONTENT_ROUTE } from '../../../utils/constants';
 import Button from '@mui/material/Button';
 import { Avatar, ListItemButton } from '@mui/material';
-import { Login } from '../../../untils/Login';
+import { Login } from '../../../utils/Login';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import { Link, Outlet } from 'react-router-dom';
 

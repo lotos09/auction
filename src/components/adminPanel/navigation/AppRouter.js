@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { CHAT_ROUTE, MAIN_PAGE_ROUTE, MANAGE_CONTENT_ROUTE } from '../../../untils/constants';
+import { CHAT_ROUTE, MAIN_PAGE_ROUTE, MANAGE_CONTENT_ROUTE } from '../../../utils/constants';
 import { Routes, Route } from 'react-router-dom';
 import { Chat } from '../app/chat/Chat';
 import { Context } from '../../../index';

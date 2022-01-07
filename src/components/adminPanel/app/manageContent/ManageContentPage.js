@@ -3,17 +3,18 @@ import { myBase } from '../../../../firebase/config';
 import Button from '@mui/material/Button';
 
 import { TextField } from '@mui/material';
+import firebase from 'firebase/compat';
 
 const db = myBase.firestore();
 
 export const ManageContentPage = () => {
-  const [fileUrl, setFileUrl] = useState(null);
+  const [fileUrl, setFileUrl] = useState([]);
   const [lot, setLot] = useState([]);
-  console.log(fileUrl);
   const [previews, setPreviews] = useState([]);
+  console.log(previews, fileUrl)
 
   const fetchUsers = async () => {
-    const usersCollection = await db.collection('users').get();
+    const usersCollection = await db.collection('users').orderBy('createdAt').get();
     setLot(
       usersCollection.docs.map(doc => {
         return doc.data();
@@ -22,6 +23,7 @@ export const ManageContentPage = () => {
   };
 
   const onFileChange = async e => {
+    console.log(e.target.files)
     const fileList = Array.from(e.target.files);
 
     const mappedFiles = fileList.map(file => ({
@@ -30,16 +32,23 @@ export const ManageContentPage = () => {
     }));
 
     setPreviews(mappedFiles);
-    //the same url can be used from code below
-    const file = e.target.files[0];
+
+
+    const files = e.target.files;
     const storageRef = myBase.storage().ref();
-    const fileRef = storageRef.child(file.name);
-    await fileRef.put(file);
-    setFileUrl(await fileRef.getDownloadURL());
+
+    for (let i = 0; i < files.length; i++) {
+      const fileRef = storageRef.child('images').child(files[i].name);
+      await fileRef.put(files[i]);
+      const imageUrl = await fileRef.getDownloadURL();
+      setFileUrl(prev => [...prev, imageUrl]);
+    }
+
   };
 
   const onSubmit = async e => {
     e.preventDefault();
+    setPreviews([]);
     const username = e.target.username.value;
     const description = e.target.description.value;
 
@@ -50,6 +59,7 @@ export const ManageContentPage = () => {
       name: username,
       avatar: fileUrl,
       description: description,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     });
 
     await fetchUsers();
@@ -90,9 +100,9 @@ export const ManageContentPage = () => {
           type="text"
           name="description"
         />
-        <button variant="contained" component="span">
+        <Button type="submit" variant="contained">
           Submit
-        </button>
+        </Button>
       </form>
       {previews.map(file => (
         <img key={file.preview} width="200" src={file.preview} />
@@ -102,7 +112,11 @@ export const ManageContentPage = () => {
         {lot.map(item => {
           return (
             <div key={item.name}>
-              <img width="400" src={item.avatar} alt={item.name} />
+              {item.avatar.map(image => {
+                return (
+                  <img key={image} width="400" src={image} alt={image} />
+                )
+              })}
               <p>name: {item.name}</p>
               <p>description: {item?.description}</p>
             </div>

@@ -3,7 +3,7 @@ import AppRouter from './components/adminPanel/navigation/AppRouter';
 import { useContext } from 'react';
 import { Context } from './index';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { Loader } from './untils/Loader';
+import { Loader } from './utils/Loader';
 
 function App() {
   const { auth } = useContext(Context);

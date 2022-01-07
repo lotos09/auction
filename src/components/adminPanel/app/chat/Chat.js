@@ -4,7 +4,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { Avatar, Button, Container, Grid } from '@mui/material';
 import { TextField } from '@mui/material';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { Loader } from '../../../../untils/Loader';
+import { Loader } from '../../../../utils/Loader';
 import firebase from 'firebase/compat';
 
 export const Chat = () => {
