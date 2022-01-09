@@ -6,7 +6,7 @@ import { TextField } from '@mui/material';
 import firebase from 'firebase/compat';
 
 const db = myBase.firestore();
-
+//preview and multiple images
 export const ManageContentPage = () => {
   const [fileUrl, setFileUrl] = useState([]);
   const [lot, setLot] = useState([]);
