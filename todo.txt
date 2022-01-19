@@ -1,8 +1,8 @@
 ContentPage:
 .preview images
-multiple upload
+.multiple upload
 text inputs style
-implement formik and use it for control inputs
+.implement formik and use it for control inputs
 clean preview after upload
 .sort lots with upload date
 

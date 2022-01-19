@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 import { useContext } from 'react';
 import { Context } from '../../../index';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { CHAT_ROUTE, MAIN_PAGE_ROUTE, MANAGE_CONTENT_ROUTE } from '../../../utils/constants';
+import { CHAT_ROUTE, MAIN_PAGE_ROUTE, MANAGE_CONTENT_ROUTE, TEST_FORMIK_ROUTE } from '../../../utils/constants';
 import Button from '@mui/material/Button';
 import { Avatar, ListItemButton } from '@mui/material';
 import { Login } from '../../../utils/Login';
@@ -83,6 +83,19 @@ export const Navbar = props => {
           </ListItemIcon>
           <ListItemText primary="content" />
         </ListItemButton>
+
+        <ListItemButton
+          component={Link}
+          to={TEST_FORMIK_ROUTE}
+          selected={selectedIndex === 4}
+          onClick={event => handleListItemClick(event, 4)}
+        >
+          <ListItemIcon>
+            <DraftsIcon />
+          </ListItemIcon>
+          <ListItemText primary="test formik" />
+        </ListItemButton>
+
       </List>
       <Divider />
       <List component="nav" aria-label="secondary mailbox folder">

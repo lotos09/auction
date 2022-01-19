@@ -1,5 +1,10 @@
 import React, { useContext } from 'react';
-import { CHAT_ROUTE, MAIN_PAGE_ROUTE, MANAGE_CONTENT_ROUTE } from '../../../utils/constants';
+import {
+  CHAT_ROUTE,
+  MAIN_PAGE_ROUTE,
+  MANAGE_CONTENT_ROUTE,
+  TEST_FORMIK_ROUTE,
+} from '../../../utils/constants';
 import { Routes, Route } from 'react-router-dom';
 import { Chat } from '../app/chat/Chat';
 import { Context } from '../../../index';
@@ -8,6 +13,7 @@ import { MainPage } from '../../MainPage';
 import { ManageContentPage } from '../app/manageContent/ManageContentPage';
 import { Navbar } from './Navbar';
 import { NotFound } from './NotFound';
+import TestFormik1 from '../app/testFormik/TestFormik1';
 
 const AppRouter = () => {
   const { auth } = useContext(Context);
@@ -22,6 +28,7 @@ const AppRouter = () => {
             <Route key={MANAGE_CONTENT_ROUTE} path="content" element={<ManageContentPage />} />
           )}
           {!!user && <Route key={CHAT_ROUTE} path="chat" element={<Chat />} />}
+          {!!user && <Route key={TEST_FORMIK_ROUTE} path="test-formik" element={<TestFormik1 />} />}
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

@@ -1,14 +1,42 @@
 import React, { useEffect, useState } from 'react';
+import { Formik, Form, Field, ErrorMessage, useFormik } from 'formik';
+import { Button, TextField } from '@mui/material';
 import { myBase } from '../../../../firebase/config';
-import Button from '@mui/material/Button';
 
-import { TextField } from '@mui/material';
 import firebase from 'firebase/compat';
-import { useStyles } from './style';
+import { useStyles } from '../manageContent/style';
 
 const db = myBase.firestore();
-//preview and multiple images
-export const ManageContentPage = () => {
+
+const TestFormik1 = () => {
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      avatar: '',
+      description: '',
+    },
+    onSubmit: async e => {
+      e.preventDefault();
+      setPreviews([]);
+      const username = e.target.username.value;
+      const description = e.target.description.value;
+
+      if (!username || !fileUrl) {
+        return;
+      }
+      await db.collection('users').doc(username).set({
+        name: username,
+        avatar: fileUrl,
+        description: description,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+
+      await fetchUsers();
+    },
+  });
+
+  const form = formik.values;
+
   const classes = useStyles();
   const [fileUrl, setFileUrl] = useState([]);
   const [lot, setLot] = useState([]);
@@ -24,7 +52,7 @@ export const ManageContentPage = () => {
   };
 
   const onFileChange = async e => {
-    console.log(e.target.files);
+    formik.handleChange(e);
     const fileList = Array.from(e.target.files);
 
     const mappedFiles = fileList.map(file => ({
@@ -45,65 +73,50 @@ export const ManageContentPage = () => {
     }
   };
 
-  const onSubmit = async e => {
-    e.preventDefault();
-    setPreviews([]);
-    const username = e.target.username.value;
-    const description = e.target.description.value;
-
-    if (!username || !fileUrl) {
-      return;
-    }
-    await db.collection('users').doc(username).set({
-      name: username,
-      avatar: fileUrl,
-      description: description,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    });
-
-    await fetchUsers();
-  };
-
   useEffect(async () => {
     await fetchUsers();
   }, []);
 
+  console.log(form);
+
   return (
     <>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={formik.handleSubmit}>
         <input
           accept="image/*"
           style={{ display: 'none' }}
-          id="raised-button-file"
+          id="avatar"
           multiple
+          name="avatar"
           type="file"
           onChange={onFileChange}
+          value={formik.values.avatar}
         />
-        <label htmlFor="raised-button-file">
+        <label htmlFor="avatar">
           <Button variant="contained" component="span">
             Upload
           </Button>
         </label>
 
         <TextField
-          id="standard-basic"
-          label="Name"
-          variant="standard"
+          id="name"
+          name="name"
           type="text"
-          name="username"
+          onChange={formik.handleChange}
+          value={formik.values.name}
         />
+
         <TextField
-          id="standard-basic"
-          label="Description"
-          type="text"
+          id="desc"
+          label="description"
           name="description"
-          multiline="true"
-          rows={4}
+          onChange={formik.handleChange}
+          value={formik.values.description}
         />
-        <Button type="submit" variant="contained">
-          Submit
-        </Button>
+
+        <Button type="submit">Submit</Button>
       </form>
+
       {previews.map(file => (
         <img key={file.preview} width="200" src={file.preview} />
       ))}
@@ -126,3 +139,5 @@ export const ManageContentPage = () => {
     </>
   );
 };
+
+export default TestFormik1;
