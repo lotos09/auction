@@ -1,55 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import { Formik, Form, Field, ErrorMessage, useFormik } from 'formik';
+import React, { useContext, useEffect, useState } from 'react';
+import { useFormik } from 'formik';
 import { Button, TextField } from '@mui/material';
 import { myBase } from '../../../../firebase/config';
 
-import firebase from 'firebase/compat';
 import { useStyles } from '../manageContent/style';
+import { lotsUrl } from '../../../../api/auctionLots';
+import { makeRequest } from '../../../../api/general';
 
 const db = myBase.firestore();
 
 const TestFormik1 = () => {
+  const [fileUrl, setFileUrl] = useState([]);
+  const [lots, setLots] = useState([]);
+  const [previews, setPreviews] = useState([]);
+  const classes = useStyles();
+  console.log(lots);
+
+  useEffect(() => {
+    fetch(lotsUrl)
+      .then(response => response.json())
+      .then(data => setLots(Object.values(data)));
+  }, []);
+
   const formik = useFormik({
     initialValues: {
-      name: '',
-      avatar: '',
+      title: '',
+      images: '',
       description: '',
     },
-    onSubmit: async e => {
-      e.preventDefault();
+    onSubmit: async (e, { resetForm }) => {
+      await makeRequest(lotsUrl, 'POST', { ...formik.values, images: fileUrl });
+
+      fetch(lotsUrl)
+        .then(response => response.json())
+        .then(data => setLots(Object.values(data)));
+
+      resetForm();
       setPreviews([]);
-      const username = e.target.username.value;
-      const description = e.target.description.value;
-
-      if (!username || !fileUrl) {
-        return;
-      }
-      await db.collection('users').doc(username).set({
-        name: username,
-        avatar: fileUrl,
-        description: description,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      });
-
-      await fetchUsers();
     },
   });
 
   const form = formik.values;
-
-  const classes = useStyles();
-  const [fileUrl, setFileUrl] = useState([]);
-  const [lot, setLot] = useState([]);
-  const [previews, setPreviews] = useState([]);
-
-  const fetchUsers = async () => {
-    const usersCollection = await db.collection('users').orderBy('createdAt').get();
-    setLot(
-      usersCollection.docs.map(doc => {
-        return doc.data();
-      }),
-    );
-  };
 
   const onFileChange = async e => {
     formik.handleChange(e);
@@ -73,40 +64,37 @@ const TestFormik1 = () => {
     }
   };
 
-  useEffect(async () => {
-    await fetchUsers();
-  }, []);
-
-  console.log(form);
-
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
         <input
           accept="image/*"
           style={{ display: 'none' }}
-          id="avatar"
+          id="images"
           multiple
-          name="avatar"
+          name="images"
           type="file"
           onChange={onFileChange}
-          value={formik.values.avatar}
+          value={formik.values.images}
         />
-        <label htmlFor="avatar">
+        <label htmlFor="images">
           <Button variant="contained" component="span">
             Upload
           </Button>
         </label>
 
         <TextField
-          id="name"
-          name="name"
+          required
+          id="title"
+          name="title"
+          label="title"
           type="text"
           onChange={formik.handleChange}
-          value={formik.values.name}
+          value={formik.values.title}
         />
 
         <TextField
+          required
           id="desc"
           label="description"
           name="description"
@@ -122,14 +110,14 @@ const TestFormik1 = () => {
       ))}
       <div>Gallery</div>
       <div className={classes.gallery}>
-        {lot
+        {lots
           .map(item => {
             return (
-              <div className={classes.lot} key={item.name}>
-                {item.avatar.map(image => {
+              <div className={classes.lot} key={item?.title}>
+                {item?.images?.map(image => {
                   return <img key={image} src={image} alt={image} />;
                 })}
-                <p>name: {item.name}</p>
+                <p>title: {item?.title}</p>
                 <p>description: {item?.description}</p>
               </div>
             );
