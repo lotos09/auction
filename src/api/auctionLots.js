@@ -1,6 +1,3 @@
-import { makeCollectionPath } from './general';
-import React, { useEffect, useState } from 'react';
+import { makeCollectionPath } from './general'
 
-export const lotsUrl = makeCollectionPath('lots');
-
-export const ThemeContext = React.createContext('light');
+export const lotsUrl = makeCollectionPath('lots')

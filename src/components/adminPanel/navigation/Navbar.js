@@ -1,127 +1,116 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import List from '@mui/material/List';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import MenuIcon from '@mui/icons-material/Menu';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import { useContext } from 'react';
-import { Context } from '../../../index';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { CHAT_ROUTE, MAIN_PAGE_ROUTE, MANAGE_CONTENT_ROUTE, TEST_FORMIK_ROUTE } from '../../../utils/constants';
-import Button from '@mui/material/Button';
-import { Avatar, ListItemButton } from '@mui/material';
-import { Login } from '../../../utils/Login';
-import DraftsIcon from '@mui/icons-material/Drafts';
-import { Link, Outlet } from 'react-router-dom';
+import * as React from 'react'
+import AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
+import CssBaseline from '@mui/material/CssBaseline'
+import Divider from '@mui/material/Divider'
+import Drawer from '@mui/material/Drawer'
+import IconButton from '@mui/material/IconButton'
+import InboxIcon from '@mui/icons-material/MoveToInbox'
+import List from '@mui/material/List'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import MenuIcon from '@mui/icons-material/Menu'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+import { useContext } from 'react'
+import { Context } from '../../../index'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { LOGIN_ROUTE, MAIN_PAGE_ROUTE, MANAGE_LOTS_ROUTE } from '../../../utils/constants'
+import Button from '@mui/material/Button'
+import { Avatar, ListItemButton } from '@mui/material'
+import { Login } from '../../../utils/Login'
+import DraftsIcon from '@mui/icons-material/Drafts'
+import { Link, Outlet } from 'react-router-dom'
 
-const drawerWidth = 240;
+const drawerWidth = 240
 
 export const Navbar = props => {
-  const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const { window } = props
+  const [mobileOpen, setMobileOpen] = React.useState(false)
 
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [selectedIndex, setSelectedIndex] = React.useState(0)
 
   const handleListItemClick = (event, index) => {
-    setSelectedIndex(index);
-    setMobileOpen(!mobileOpen);
-  };
+    setSelectedIndex(index)
+    setMobileOpen(!mobileOpen)
+  }
 
-  const { auth } = useContext(Context);
-  const [user] = useAuthState(auth);
+  const { auth } = useContext(Context)
+  const [user] = useAuthState(auth)
 
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+    setMobileOpen(!mobileOpen)
+  }
 
   const drawer = (
     <div>
       <Toolbar />
       <Divider />
 
-      <List component="nav" aria-label="main mailbox folders">
+      <List component='nav' aria-label='main mailbox folders'>
+
         <ListItemButton
           component={Link}
-          to={MAIN_PAGE_ROUTE}
+          to={LOGIN_ROUTE}
           selected={selectedIndex === 1}
           onClick={event => handleListItemClick(event, 1)}
         >
           <ListItemIcon>
-            <InboxIcon />
+            <DraftsIcon />
           </ListItemIcon>
-          <ListItemText primary="main" />
+          <ListItemText primary='login | register' />
         </ListItemButton>
 
         <ListItemButton
           component={Link}
-          to={CHAT_ROUTE}
+          to={MAIN_PAGE_ROUTE}
           selected={selectedIndex === 2}
           onClick={event => handleListItemClick(event, 2)}
         >
           <ListItemIcon>
             <InboxIcon />
           </ListItemIcon>
-          <ListItemText primary="chat" />
+          <ListItemText primary='main' />
         </ListItemButton>
 
         <ListItemButton
           component={Link}
-          to={MANAGE_CONTENT_ROUTE}
+          to={MANAGE_LOTS_ROUTE}
           selected={selectedIndex === 3}
           onClick={event => handleListItemClick(event, 3)}
         >
           <ListItemIcon>
             <DraftsIcon />
           </ListItemIcon>
-          <ListItemText primary="content" />
-        </ListItemButton>
-
-        <ListItemButton
-          component={Link}
-          to={TEST_FORMIK_ROUTE}
-          selected={selectedIndex === 4}
-          onClick={event => handleListItemClick(event, 4)}
-        >
-          <ListItemIcon>
-            <DraftsIcon />
-          </ListItemIcon>
-          <ListItemText primary="test formik" />
+          <ListItemText primary='manage lots' />
         </ListItemButton>
 
       </List>
       <Divider />
-      <List component="nav" aria-label="secondary mailbox folder">
+      <List component='nav' aria-label='secondary mailbox folder'>
         <ListItemButton
           selected={selectedIndex === 4}
           onClick={event => handleListItemClick(event, 4)}
         >
-          <ListItemText primary="Trash" />
+          <ListItemText primary='Trash' />
         </ListItemButton>
         <ListItemButton
           selected={selectedIndex === 5}
           onClick={event => handleListItemClick(event, 5)}
         >
-          <ListItemText primary="Spam" />
+          <ListItemText primary='Spam' />
         </ListItemButton>
       </List>
     </div>
-  );
+  )
 
-  const container = window !== undefined ? () => window().document.body : undefined;
+  const container = window !== undefined ? () => window().document.body : undefined
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar
-        position="fixed"
+        position='fixed'
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
@@ -129,22 +118,23 @@ export const Navbar = props => {
       >
         <Toolbar style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
+            color='inherit'
+            aria-label='open drawer'
+            edge='start'
             onClick={handleDrawerToggle}
             sx={{ mr: 2, display: { sm: 'none' } }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant='h6' noWrap component='div'>
             Auction House
           </Typography>
 
           {user ? (
             <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <p style={{ marginRight: '20px' }}>{user.email}</p>
               <Avatar src={user.photoURL} />
-              <Button onClick={() => auth.signOut()} color="inherit">
+              <Button onClick={() => auth.signOut()} color='inherit'>
                 Exit
               </Button>
             </div>
@@ -154,14 +144,14 @@ export const Navbar = props => {
         </Toolbar>
       </AppBar>
       <Box
-        component="nav"
+        component='nav'
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders"
+        aria-label='mailbox folders'
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Drawer
           container={container}
-          variant="temporary"
+          variant='temporary'
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
@@ -175,7 +165,7 @@ export const Navbar = props => {
           {drawer}
         </Drawer>
         <Drawer
-          variant="permanent"
+          variant='permanent'
           sx={{
             display: { xs: 'none', sm: 'block' },
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
@@ -186,7 +176,7 @@ export const Navbar = props => {
         </Drawer>
       </Box>
       <Box
-        component="main"
+        component='main'
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar />
@@ -194,5 +184,5 @@ export const Navbar = props => {
         <Outlet />
       </Box>
     </Box>
-  );
-};
+  )
+}

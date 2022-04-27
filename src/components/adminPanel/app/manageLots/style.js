@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core'
 
 export const useStyles = makeStyles(theme => ({
   gallery: {
@@ -16,4 +16,4 @@ export const useStyles = makeStyles(theme => ({
     borderBottom: '2px solid #ccc!important',
     padding: '10px 10px',
   },
-}));
+}))
