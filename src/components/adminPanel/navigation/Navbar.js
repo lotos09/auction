@@ -1,46 +1,49 @@
-import * as React from 'react'
-import AppBar from '@mui/material/AppBar'
-import Box from '@mui/material/Box'
-import CssBaseline from '@mui/material/CssBaseline'
-import Divider from '@mui/material/Divider'
-import Drawer from '@mui/material/Drawer'
-import IconButton from '@mui/material/IconButton'
-import InboxIcon from '@mui/icons-material/MoveToInbox'
-import List from '@mui/material/List'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
-import MenuIcon from '@mui/icons-material/Menu'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
-import { useContext } from 'react'
-import { Context } from '../../../index'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { LOGIN_ROUTE, MAIN_PAGE_ROUTE, MANAGE_LOTS_ROUTE } from '../../../utils/constants'
-import Button from '@mui/material/Button'
-import { Avatar, ListItemButton } from '@mui/material'
-import { Login } from '../../../utils/Login'
-import DraftsIcon from '@mui/icons-material/Drafts'
-import { Link, Outlet } from 'react-router-dom'
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import CssBaseline from '@mui/material/CssBaseline';
+import Divider from '@mui/material/Divider';
+import Drawer from '@mui/material/Drawer';
+import IconButton from '@mui/material/IconButton';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import List from '@mui/material/List';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import MenuIcon from '@mui/icons-material/Menu';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import { useContext } from 'react';
+import { Context } from '../../../index';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { LOGIN_ROUTE, MAIN_PAGE_ROUTE, MANAGE_LOTS_ROUTE } from '../../../utils/constants';
+import Button from '@mui/material/Button';
+import { Avatar, ListItemButton } from '@mui/material';
+import DraftsIcon from '@mui/icons-material/Drafts';
+import { Link, Outlet } from 'react-router-dom';
 
-const drawerWidth = 240
+const drawerWidth = 240;
 
 export const Navbar = props => {
-  const { window } = props
-  const [mobileOpen, setMobileOpen] = React.useState(false)
+  const { window } = props;
+  const [mobileOpen, setMobileOpen] = React.useState(false);
 
-  const [selectedIndex, setSelectedIndex] = React.useState(0)
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
 
   const handleListItemClick = (event, index) => {
-    setSelectedIndex(index)
-    setMobileOpen(!mobileOpen)
-  }
+    setSelectedIndex(index);
+    setMobileOpen(!mobileOpen);
+  };
 
-  const { auth } = useContext(Context)
-  const [user] = useAuthState(auth)
+  const { auth } = useContext(Context);
+  const [user] = useAuthState(auth);
 
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen)
-  }
+    setMobileOpen(!mobileOpen);
+  };
+
+  const signOut = async () => {
+    auth.signOut();
+  };
 
   const drawer = (
     <div>
@@ -102,9 +105,9 @@ export const Navbar = props => {
         </ListItemButton>
       </List>
     </div>
-  )
+  );
 
-  const container = window !== undefined ? () => window().document.body : undefined
+  const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -130,16 +133,13 @@ export const Navbar = props => {
             Auction House
           </Typography>
 
-          {user ? (
+          {user && (
             <div style={{ display: 'flex', flexDirection: 'row' }}>
               <p style={{ marginRight: '20px' }}>{user.email}</p>
-              <Avatar src={user.photoURL} />
-              <Button onClick={() => auth.signOut()} color='inherit'>
+              <Button onClick={signOut} color='inherit'>
                 Exit
               </Button>
             </div>
-          ) : (
-            <Login />
           )}
         </Toolbar>
       </AppBar>
@@ -184,5 +184,5 @@ export const Navbar = props => {
         <Outlet />
       </Box>
     </Box>
-  )
-}
+  );
+};

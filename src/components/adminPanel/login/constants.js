@@ -1,0 +1,1 @@
+export const superAdminUid = 'UdtJyAOj04Ps80P0Cf8APU7hiOY2';

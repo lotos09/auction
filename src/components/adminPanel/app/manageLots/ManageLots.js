@@ -1,38 +1,36 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { useFormik } from 'formik'
-import { Button, TextField } from '@mui/material'
-import { myBase } from '../../../../firebase/config'
+import React, { useContext, useEffect, useState } from 'react';
+import { useFormik } from 'formik';
+import { Button, TextField } from '@mui/material';
+import { myBase } from '../../../../firebase/config';
 
-import { useStyles } from './style'
-import { makeCollectionPath, makeRequest } from '../../../../api/general'
-import { Context } from '../../../../index'
-import { useAuthState } from 'react-firebase-hooks/auth'
+import { useStyles } from './style';
+import { makeCollectionPath, makeRequest } from '../../../../api/general';
+import { Context } from '../../../../index';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 const ManageLots = () => {
-  const [fileUrl, setFileUrl] = useState([])
-  const [lots, setLots] = useState([])
-  const [previews, setPreviews] = useState([])
-  const classes = useStyles()
-  const { auth } = useContext(Context)
-  const [user] = useAuthState(auth)
-  const token = user.accessToken
-
-  console.log(fileUrl)
+  const [fileUrl, setFileUrl] = useState([]);
+  const [lots, setLots] = useState([]);
+  const [previews, setPreviews] = useState([]);
+  const classes = useStyles();
+  const { auth } = useContext(Context);
+  const [user] = useAuthState(auth);
+  const token = user.accessToken;
 
   const getLots = () => fetch(makeCollectionPath('lots', token, ''))
     .then(response => response.json())
-    .then(data => setLots(Object.entries(data || [])))
+    .then(data => setLots(Object.entries(data || [])));
 
   const deleteItem = async (id) => {
-    await makeRequest(makeCollectionPath('lots', token, `/${id}`), 'DELETE')
-    await getLots()
-  }
+    await makeRequest(makeCollectionPath('lots', token, `/${id}`), 'DELETE');
+    await getLots();
+  };
 
   useEffect(() => {
     fetch(makeCollectionPath('lots', token, ''))
       .then(response => response.json())
-      .then(data => setLots(Object.entries(data || [])))
-  }, [token])
+      .then(data => setLots(Object.entries(data || [])));
+  }, [token]);
 
   const formik = useFormik({
     initialValues: {
@@ -41,40 +39,40 @@ const ManageLots = () => {
       description: '',
     },
     onSubmit: async (e, { resetForm }) => {
-      await makeRequest(makeCollectionPath('lots', token, ''), 'POST', { ...formik.values, images: fileUrl })
+      await makeRequest(makeCollectionPath('lots', token, ''), 'POST', { ...formik.values, images: fileUrl });
 
       fetch(makeCollectionPath('lots', token, ''))
         .then(response => response.json())
-        .then(data => setLots(Object.entries(data || [])))
+        .then(data => setLots(Object.entries(data || [])));
 
-      resetForm()
-      setPreviews([])
+      resetForm();
+      setPreviews([]);
     },
-  })
+  });
 
-  console.log(formik.values)
+  console.log(formik.values);
 
   const onFileChange = async e => {
-    formik.handleChange(e)
-    const fileList = Array.from(e.target.files)
+    formik.handleChange(e);
+    const fileList = Array.from(e.target.files);
 
     const mappedFiles = fileList.map(file => ({
       ...file,
       preview: URL.createObjectURL(file),
-    }))
+    }));
 
-    setPreviews(mappedFiles)
+    setPreviews(mappedFiles);
 
-    const files = e.target.files
-    const storageRef = myBase.storage().ref()
+    const files = e.target.files;
+    const storageRef = myBase.storage().ref();
 
     for (let i = 0; i < files.length; i++) {
-      const fileRef = storageRef.child('images').child(files[i].name)
-      await fileRef.put(files[i])
-      const imageUrl = await fileRef.getDownloadURL()
-      setFileUrl(prev => [...prev, imageUrl])
+      const fileRef = storageRef.child('images').child(files[i].name);
+      await fileRef.put(files[i]);
+      const imageUrl = await fileRef.getDownloadURL();
+      setFileUrl(prev => [...prev, imageUrl]);
     }
-  }
+  };
 
   return (
     <>
@@ -127,18 +125,18 @@ const ManageLots = () => {
             return (
               <div className={classes.lot} key={item[1]?.title}>
                 {item[1]?.images?.map(image => {
-                  return <img key={image} src={image} alt={image} />
+                  return <img key={image} src={image} alt={image} />;
                 })}
                 <p>title: {item[1]?.title}</p>
                 <p>description: {item[1]?.description}</p>
                 <button onClick={() => deleteItem(item[0])}>delete</button>
               </div>
-            )
+            );
           })
           .reverse()}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default ManageLots
+export default ManageLots;

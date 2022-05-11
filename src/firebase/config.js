@@ -1,5 +1,5 @@
-import firebase from 'firebase/compat'
-import { getAuth } from 'firebase/auth'
+import firebase from 'firebase/compat';
+import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBzFNuZpZFmo00ODltBPhHPVDiiIC64GLE',
@@ -8,8 +8,8 @@ const firebaseConfig = {
   storageBucket: 'auction-1459b.appspot.com',
   messagingSenderId: '692768848863',
   appId: '1:692768848863:web:e3a01dfbe362ea17d8a26a',
-}
+};
 
-export const myBase = firebase.initializeApp(firebaseConfig)
+export const myBase = firebase.initializeApp(firebaseConfig);
 
-export const auth = getAuth(myBase)
+export const auth = getAuth(myBase);
