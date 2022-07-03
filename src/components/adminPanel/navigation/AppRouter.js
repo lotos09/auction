@@ -24,7 +24,9 @@ const AppRouter = () => {
           <Route path='/' element={<Navbar />}>
             <Route index key={MAIN_PAGE_ROUTE} element={<MainPage />} />
             <Route key={LOGIN_ROUTE} path={LOGIN_ROUTE} element={<LoginPage />} />
-            {!!user && <Route key={MANAGE_LOTS_ROUTE} path={MANAGE_LOTS_ROUTE} element={<ManageLots />} />}
+            {!!user &&
+              <Route key={MANAGE_LOTS_ROUTE} path={MANAGE_LOTS_ROUTE}
+                     element={<ManageLots />} />}
             <Route path='*' element={<NotFound />} />
           </Route>
         </Routes> : <LoginPage />}

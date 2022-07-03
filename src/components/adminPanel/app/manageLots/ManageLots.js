@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { Button, TextField } from '@mui/material';
-import { myBase } from '../../../../firebase/config';
 
 import { useStyles } from './style';
 import { makeCollectionPath, makeRequest } from '../../../../api/general';
@@ -13,7 +12,7 @@ const ManageLots = () => {
   const [lots, setLots] = useState([]);
   const [previews, setPreviews] = useState([]);
   const classes = useStyles();
-  const { auth } = useContext(Context);
+  const { auth, myBase } = useContext(Context);
   const [user] = useAuthState(auth);
   const token = user.accessToken;
 
@@ -49,8 +48,6 @@ const ManageLots = () => {
       setPreviews([]);
     },
   });
-
-  console.log(formik.values);
 
   const onFileChange = async e => {
     formik.handleChange(e);
@@ -121,9 +118,9 @@ const ManageLots = () => {
       <div>Gallery</div>
       <div className={classes.gallery}>
         {lots
-          .map(item => {
+          .map((item, index) => {
             return (
-              <div className={classes.lot} key={item[1]?.title}>
+              <div className={classes.lot} key={index}>
                 {item[1]?.images?.map(image => {
                   return <img key={image} src={image} alt={image} />;
                 })}
