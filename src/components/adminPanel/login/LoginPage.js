@@ -5,10 +5,15 @@ import React, { useContext, useMemo } from 'react';
 import { Context } from '../../../index';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { superAdminUid } from './constants';
+import { getAuth, updatePassword } from 'firebase/auth';
 
 export const LoginPage = () => {
-  const { auth } = useContext(Context);
-  const [user] = useAuthState(auth);
+  // const { auth } = useContext(Context);
+  // const [user] = useAuthState(auth);
+
+  const auth = getAuth();
+
+  const user = auth.currentUser;
 
   const registerForm = useFormik(
     {
@@ -53,6 +58,12 @@ export const LoginPage = () => {
     }
   };
 
+  const updatePass = () => updatePassword(user, 'newPass').then(() => {
+    console.log('password updated');
+  }).catch((error) => {
+    console.log('error');
+  });
+
   const renderRegisterForm = useMemo(() => {
     return (
       <>
@@ -88,6 +99,8 @@ export const LoginPage = () => {
 
 
       <h2>Log in</h2>
+
+      <button onClick={updatePass}>update pass</button>
 
       <form onSubmit={loginForm.handleSubmit}>
         <TextField

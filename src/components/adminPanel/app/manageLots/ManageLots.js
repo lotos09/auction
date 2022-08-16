@@ -15,6 +15,7 @@ const ManageLots = () => {
   const { auth, myBase } = useContext(Context);
   const [user] = useAuthState(auth);
   const token = user.accessToken;
+  console.log(user);
 
   const getLots = () => fetch(makeCollectionPath('lots', token, ''))
     .then(response => response.json())
