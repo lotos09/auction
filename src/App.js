@@ -12,6 +12,8 @@ function App() {
   if (loading) {
     return <Loader />;
   }
+  
+  //misha xuy ebaniy ya perdoly
 
   return (
     <BrowserRouter>
