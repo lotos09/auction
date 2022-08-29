@@ -4,7 +4,7 @@ import { Button, TextField } from '@mui/material';
 
 import { useStyles } from './style';
 import { makeCollectionPath, makeRequest } from '../../../../api/general';
-import { Context } from '../../../../index';
+import { Context } from '../../../../App';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 const ManageLots = () => {
@@ -15,7 +15,6 @@ const ManageLots = () => {
   const { auth, myBase } = useContext(Context);
   const [user] = useAuthState(auth);
   const token = user.accessToken;
-  console.log(user);
 
   const getLots = () => fetch(makeCollectionPath('lots', token, ''))
     .then(response => response.json())
@@ -39,7 +38,8 @@ const ManageLots = () => {
       description: '',
     },
     onSubmit: async (e, { resetForm }) => {
-      await makeRequest(makeCollectionPath('lots', token, ''), 'POST', { ...formik.values, images: fileUrl });
+      await makeRequest(makeCollectionPath('lots', token, ''),
+        'POST', { ...formik.values, images: fileUrl });
 
       fetch(makeCollectionPath('lots', token, ''))
         .then(response => response.json())
