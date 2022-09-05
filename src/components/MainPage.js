@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Context } from '../index';
+import { Context } from '../App';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 

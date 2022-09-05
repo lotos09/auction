@@ -13,13 +13,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useContext } from 'react';
-import { Context } from '../../../index';
+import { Context } from '../../../App';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { LOGIN_ROUTE, MAIN_PAGE_ROUTE, MANAGE_LOTS_ROUTE } from '../../../utils/constants';
+import { ROUTES } from '../../../utils/constants';
 import Button from '@mui/material/Button';
-import { Avatar, ListItemButton } from '@mui/material';
-import DraftsIcon from '@mui/icons-material/Drafts';
+import { ListItemButton } from '@mui/material';
 import { Link, Outlet } from 'react-router-dom';
+import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
+import InventoryIcon from '@mui/icons-material/Inventory';
 
 const drawerWidth = 240;
 
@@ -54,21 +55,9 @@ export const Navbar = props => {
 
         <ListItemButton
           component={Link}
-          to={LOGIN_ROUTE}
+          to={ROUTES.MAIN_PAGE_ROUTE}
           selected={selectedIndex === 1}
           onClick={event => handleListItemClick(event, 1)}
-        >
-          <ListItemIcon>
-            <DraftsIcon />
-          </ListItemIcon>
-          <ListItemText primary='login | register' />
-        </ListItemButton>
-
-        <ListItemButton
-          component={Link}
-          to={MAIN_PAGE_ROUTE}
-          selected={selectedIndex === 2}
-          onClick={event => handleListItemClick(event, 2)}
         >
           <ListItemIcon>
             <InboxIcon />
@@ -78,14 +67,26 @@ export const Navbar = props => {
 
         <ListItemButton
           component={Link}
-          to={MANAGE_LOTS_ROUTE}
+          to={ROUTES.MANAGE_LOTS_ROUTE}
+          selected={selectedIndex === 2}
+          onClick={event => handleListItemClick(event, 2)}
+        >
+          <ListItemIcon>
+            <InventoryIcon />
+          </ListItemIcon>
+          <ListItemText primary='manage lots' />
+        </ListItemButton>
+
+        <ListItemButton
+          component={Link}
+          to={ROUTES.MANAGE_USERS_ROUTE}
           selected={selectedIndex === 3}
           onClick={event => handleListItemClick(event, 3)}
         >
           <ListItemIcon>
-            <DraftsIcon />
+            <SupervisedUserCircleIcon />
           </ListItemIcon>
-          <ListItemText primary='manage lots' />
+          <ListItemText primary='manage users' />
         </ListItemButton>
 
       </List>
@@ -180,7 +181,6 @@ export const Navbar = props => {
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar />
-        <Typography paragraph>some description in header</Typography>
         <Outlet />
       </Box>
     </Box>
