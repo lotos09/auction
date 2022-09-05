@@ -1,5 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import React, { useContext } from 'react';
 import { Context } from '../../../../App';
 import UsersTable from './UsersTable';
 import RegisterForm from './RegisterForm';
@@ -12,14 +11,15 @@ const styles = {
 }
 
 export const ManageUsersPage = () => {
-  const { auth, shallowUsers, setUsers } = useContext(Context);
-
+  const { shallowUsers, isAdmin, isSuperAdmin } = useContext(Context);
 
   return (
     <div style={styles.main}>
-      manage users page:
-      <UsersTable users={shallowUsers} />
-      <RegisterForm />
+      {isAdmin && <UsersTable users={shallowUsers} />}
+      {isSuperAdmin &&
+        <RegisterForm />}
+      {!isAdmin && <div>You don't have permission to manage users</div>}
+
     </div>
   )
 }

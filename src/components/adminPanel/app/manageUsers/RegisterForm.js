@@ -1,15 +1,18 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useFormik } from 'formik';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { makeCollectionPath, makeRequest } from '../../../../api/general';
 import { Button, Checkbox, TextField } from '@mui/material';
+import { Context } from '../../../../App';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 const RegisterForm = () => {
+  const { auth } = useContext(Context);
+  const [user] = useAuthState(auth);
   const registerForm = useFormik(
     {
       initialValues: {
         registerEmail: '',
-        registerPassword: '',
         role: {
           admin: false,
           employee: false,
@@ -51,7 +54,7 @@ const RegisterForm = () => {
         />
 
         <TextField
-          sx={{color: 'red'}}
+          sx={{color: 'red', marginLeft: '10px'}}
           required
           id='registerPassword'
           label='registerPassword'
@@ -61,24 +64,33 @@ const RegisterForm = () => {
         />
 
         <div>
-          <span>is admin</span>
-          <Checkbox
-            checked={registerForm.values.role.admin}
-            onChange={() => onCheckboxChange('admin')}
-            inputProps={{ 'aria-label': 'controlled' }}
-          />
-          <span>is employee</span>
-          <Checkbox
-            checked={registerForm.values.role.employee}
-            onChange={() => onCheckboxChange('employee')}
-            inputProps={{ 'aria-label': 'controlled' }}
-          />
-          <span>is read only</span>
-          <Checkbox
-            checked={registerForm.values.role.readOnly}
-            onChange={() => onCheckboxChange('readOnly')}
-            inputProps={{ 'aria-label': 'controlled' }}
-          />
+          <div>
+            <Checkbox
+              checked={registerForm.values.role.admin}
+              onChange={() => onCheckboxChange('admin')}
+              inputProps={{ 'aria-label': 'controlled' }}
+            />
+            <span>is admin</span>
+          </div>
+
+          <div>
+            <Checkbox
+              checked={registerForm.values.role.employee}
+              onChange={() => onCheckboxChange('employee')}
+              inputProps={{ 'aria-label': 'controlled' }}
+            />
+            <span>is employee</span>
+          </div>
+
+          <div>
+            <Checkbox
+              checked={registerForm.values.role.readOnly}
+              onChange={() => onCheckboxChange('readOnly')}
+              inputProps={{ 'aria-label': 'controlled' }}
+            />
+            <span>is read only</span>
+          </div>
+
         </div>
         <Button type='submit' variant="contained">Submit</Button>
       </form>

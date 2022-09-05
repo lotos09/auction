@@ -11,6 +11,7 @@ import 'firebase/auth';
 import { myBase } from './firebase/config';
 import { makeCollectionPath } from './api/general';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { superAdminUid } from './components/adminPanel/login/constants';
 
 export const Context = createContext(null);
 
@@ -19,17 +20,34 @@ const firestore = firebase.firestore();
 
 function App() {
   const [user] = useAuthState(auth);
+  const currentUser = useMemo(() => user, [user]);
 
   const [users, setUsers] = useState({});
-  const [currentShallowUser, setCurrentShallowUser] = useState({});
-  const shallowUsers = useMemo(() => Object.values(users), [users]);
+  const [currentShallowUser, setCurrentShallowUser] = useState(null);
+  const shallowUsers = useMemo(() => Object.entries(users).map(item => {
+    return {...item[1], dbId: item[0]}
+  }), [users]);
+
+  useEffect(() => {
+    if (user) {
+      setCurrentShallowUser(shallowUsers.find(({ uid }) => uid === user.uid))
+    }
+  }, [users, shallowUsers]);
 
   useEffect(() => {
     const token = user?.accessToken;
     fetch(makeCollectionPath('users', token, ''))
       .then(response => response.json())
-      .then(data => setUsers(data));
+      .then(data => {
+        if (!data?.error) {
+          setUsers(data);
+        }
+      });
   }, [user?.accessToken]);
+
+  const isAdmin = useMemo(() => currentShallowUser?.role?.admin, [currentShallowUser]);
+  const isEmployee = useMemo(() => currentShallowUser?.role?.employee, [currentShallowUser]);
+  const isSuperAdmin = useMemo(() => user?.uid === superAdminUid, [user]);
 
   return (
     <Context.Provider
@@ -42,6 +60,10 @@ function App() {
         setUsers,
         setCurrentShallowUser,
         currentShallowUser,
+        currentUser,
+        isAdmin,
+        isSuperAdmin,
+        isEmployee,
       }}
     >
     <BrowserRouter>

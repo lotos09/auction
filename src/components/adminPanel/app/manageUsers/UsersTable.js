@@ -1,15 +1,36 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React from 'react';
+import UsersTableRow from './UsersTableRow';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+
+const styles = {
+  table: {
+    minWidth: 650,
+    maxWidth: 1000,
+  }
+}
 
 const UsersTable = ({ users }) => {
 
   return (
     <>
-      <div>
-        <h2>Users:</h2>
-        {users ? users.map(user => (
-          <div key={user.registerEmail}>{user.registerEmail}</div>
-        )) : <p>no users</p>}
-      </div>
+      <TableContainer>
+        <Table sx={styles.table} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>email</TableCell>
+              <TableCell align="right">is admin</TableCell>
+              <TableCell align="right">is employee</TableCell>
+              <TableCell align="right">is read only</TableCell>
+              <TableCell align="right">Edit user</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {users.map(user => (
+              <UsersTableRow key={user.registerEmail} user={user} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </>
   )
 }

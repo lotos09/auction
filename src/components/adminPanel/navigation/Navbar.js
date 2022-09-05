@@ -17,8 +17,7 @@ import { Context } from '../../../App';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { ROUTES } from '../../../utils/constants';
 import Button from '@mui/material/Button';
-import { Avatar, ListItemButton } from '@mui/material';
-import DraftsIcon from '@mui/icons-material/Drafts';
+import { ListItemButton } from '@mui/material';
 import { Link, Outlet } from 'react-router-dom';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import InventoryIcon from '@mui/icons-material/Inventory';
@@ -56,21 +55,9 @@ export const Navbar = props => {
 
         <ListItemButton
           component={Link}
-          to={ROUTES.LOGIN_ROUTE}
+          to={ROUTES.MAIN_PAGE_ROUTE}
           selected={selectedIndex === 1}
           onClick={event => handleListItemClick(event, 1)}
-        >
-          <ListItemIcon>
-            <DraftsIcon />
-          </ListItemIcon>
-          <ListItemText primary='login | register' />
-        </ListItemButton>
-
-        <ListItemButton
-          component={Link}
-          to={ROUTES.MAIN_PAGE_ROUTE}
-          selected={selectedIndex === 2}
-          onClick={event => handleListItemClick(event, 2)}
         >
           <ListItemIcon>
             <InboxIcon />
@@ -81,8 +68,8 @@ export const Navbar = props => {
         <ListItemButton
           component={Link}
           to={ROUTES.MANAGE_LOTS_ROUTE}
-          selected={selectedIndex === 3}
-          onClick={event => handleListItemClick(event, 3)}
+          selected={selectedIndex === 2}
+          onClick={event => handleListItemClick(event, 2)}
         >
           <ListItemIcon>
             <InventoryIcon />
@@ -93,8 +80,8 @@ export const Navbar = props => {
         <ListItemButton
           component={Link}
           to={ROUTES.MANAGE_USERS_ROUTE}
-          selected={selectedIndex === 4}
-          onClick={event => handleListItemClick(event, 4)}
+          selected={selectedIndex === 3}
+          onClick={event => handleListItemClick(event, 3)}
         >
           <ListItemIcon>
             <SupervisedUserCircleIcon />
@@ -106,14 +93,14 @@ export const Navbar = props => {
       <Divider />
       <List component='nav' aria-label='secondary mailbox folder'>
         <ListItemButton
-          selected={selectedIndex === 5}
-          onClick={event => handleListItemClick(event, 5)}
+          selected={selectedIndex === 4}
+          onClick={event => handleListItemClick(event, 4)}
         >
           <ListItemText primary='Trash' />
         </ListItemButton>
         <ListItemButton
-          selected={selectedIndex === 6}
-          onClick={event => handleListItemClick(event, 6)}
+          selected={selectedIndex === 5}
+          onClick={event => handleListItemClick(event, 5)}
         >
           <ListItemText primary='Spam' />
         </ListItemButton>
@@ -194,7 +181,6 @@ export const Navbar = props => {
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar />
-        <Typography paragraph>some description in header</Typography>
         <Outlet />
       </Box>
     </Box>

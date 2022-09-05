@@ -20,10 +20,10 @@ const AppRouter = () => {
         <Routes>
           <Route path='/' element={<Navbar />}>
             <Route index key={ROUTES.MAIN_PAGE_ROUTE} element={<MainPage />} />
-            <Route key={ROUTES.LOGIN_ROUTE} path={ROUTES.LOGIN_ROUTE} element={<LoginPage />} />
-            <Route key={ROUTES.MANAGE_USERS_ROUTE} path={ROUTES.MANAGE_USERS_ROUTE} element={<ManageUsersPage />} />
-
-            <Route key={ROUTES.MANAGE_LOTS_ROUTE} path={ROUTES.MANAGE_LOTS_ROUTE} element={<ManageLots />} />
+            <Route key={ROUTES.MANAGE_USERS_ROUTE} path={ROUTES.MANAGE_USERS_ROUTE}
+                   element={<ManageUsersPage />} />
+            <Route key={ROUTES.MANAGE_LOTS_ROUTE} path={ROUTES.MANAGE_LOTS_ROUTE}
+                   element={<ManageLots />} />
             <Route path='*' element={<NotFound />} />
           </Route>
         </Routes> : <LoginPage />}
