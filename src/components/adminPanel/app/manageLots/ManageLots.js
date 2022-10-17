@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useFormik } from 'formik';
 import { Button, TextField } from '@mui/material';
 
@@ -7,9 +7,20 @@ import { makeCollectionPath, makeRequest } from '../../../../api/general';
 import { Context } from '../../../../App';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
+//use useStyles and separate file to get rid of inline styles
 const styles = {
   previewContainer: {
     margin: '20px 0',
+    display: 'flex',
+  },
+  previewCard: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  previewDeleteButton: {
+    marginLeft: 10,
+    width: 200,
   },
   previewImg: {
     border: 'solid 1px black',
@@ -19,6 +30,7 @@ const styles = {
   },
   form: {
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     width: 600,
   }
@@ -28,7 +40,7 @@ const styles = {
 const ManageLots = () => {
   const [fileUrl, setFileUrl] = useState([]);
   const [lots, setLots] = useState([]);
-  const [previews, setPreviews] = useState([]);
+
   const classes = useStyles();
   const {
     auth,
@@ -42,15 +54,19 @@ const ManageLots = () => {
   const [user] = useAuthState(auth);
   const token = user.accessToken;
 
-
   const getLots = () => fetch(makeCollectionPath('lots', token, ''))
     .then(response => response.json())
     .then(data => setLots(Object.entries(data || [])));
 
-  const deleteItem = async (id) => {
+  const onDeleteItem = async (id) => {
     await makeRequest(makeCollectionPath('lots', token, `/${id}`), 'DELETE');
     await getLots();
   };
+
+  const onEditItem = async (id) => {
+    await makeRequest(makeCollectionPath('lots', token, `/${id}`), 'PATCH', {title: 'testTitle'});
+    await getLots();
+  }
 
   useEffect(() => {
     fetch(makeCollectionPath('lots', token, ''))
@@ -68,10 +84,9 @@ const ManageLots = () => {
       await makeRequest(makeCollectionPath('lots', token, ''),
         'POST', { ...formik.values, images: fileUrl });
 
-      fetch(makeCollectionPath('lots', token, ''))
-        .then(response => response.json())
-        .then(data => setLots(Object.entries(data || [])));
+      await getLots();
 
+      setFileUrl([]);
       resetForm();
       setPreviews([]);
     },
@@ -79,14 +94,6 @@ const ManageLots = () => {
 
   const onFileChange = async e => {
     formik.handleChange(e);
-    const fileList = Array.from(e.target.files);
-
-    const mappedFiles = fileList.map(file => ({
-      ...file,
-      preview: URL.createObjectURL(file),
-    }));
-
-    setPreviews(mappedFiles);
 
     const files = e.target.files;
     const storageRef = myBase.storage().ref();
@@ -99,55 +106,88 @@ const ManageLots = () => {
     }
   };
 
+  const onDeletePreview = useCallback((url) => {
+    setFileUrl(prev => prev.filter(item => item !== url));
+  }, []);
+
   return (
     <>
-      {isManageAllowed &&
-        <form style={styles.form} onSubmit={formik.handleSubmit}>
-          <input
-            accept='image/*'
-            style={{ display: 'none' }}
-            id='images'
-            multiple
-            name='images'
-            type='file'
-            onChange={onFileChange}
-            value={formik.values.images}
-          />
-          <label htmlFor='images'>
-            <Button variant='contained' component='span'>
-              Upload
-            </Button>
-          </label>
+      <div>
+        <h3>Add new lot Item:</h3>
+        <div>
+          {isManageAllowed &&
+            <form style={styles.form} onSubmit={formik.handleSubmit}>
+              <input
+                accept='image/*'
+                style={{ display: 'none' }}
+                id='images'
+                multiple
+                name='images'
+                type='file'
+                onChange={onFileChange}
+                value={formik.values.images}
+              />
+              <label htmlFor='images'>
+                <Button variant='contained' component='span'>
+                  Upload
+                </Button>
+              </label>
 
-          <TextField
-            required
-            id='title'
-            name='title'
-            label='title'
-            type='text'
-            onChange={formik.handleChange}
-            value={formik.values.title}
-          />
+              <div className={classes.inputsContainer}>
+                <TextField
+                  required
+                  id='title'
+                  name='title'
+                  label='title'
+                  type='text'
+                  onChange={formik.handleChange}
+                  value={formik.values.title}
+                  style={{
+                    marginTop: 8,
+                  }}
+                />
 
-          <TextField
-            required
-            id='desc'
-            label='description'
-            name='description'
-            onChange={formik.handleChange}
-            value={formik.values.description}
-          />
+                <TextField
+                  required
+                  id='desc'
+                  label='description'
+                  name='description'
+                  onChange={formik.handleChange}
+                  value={formik.values.description}
+                  style={{
+                    height: 200,
+                    marginTop: 8,
+                  }}
+                />
+              </div>
 
-          <Button type='submit'>Submit</Button>
-      </form>}
 
-      <div style={styles.previewContainer}>
-        {previews.map(file => (
-          <img style={styles.previewImg} key={file.preview} width='200' src={file.preview} alt="lot image" />
-        ))}
+              <Button style={{alignSelf: 'flex-start'}} type='submit'>Submit</Button>
+            </form>}
+        </div>
       </div>
 
-      <div>Gallery</div>
+      {/*<div style={styles.previewContainer}>*/}
+      {/*  {previews.map((file) => {*/}
+
+      {/*    return (<div key={file.preview} style={styles.previewCard}>*/}
+      {/*      <img style={styles.previewImg} height='200' src={file.preview} alt="lot image" />*/}
+      {/*      <Button onClick={() => onDeletePreview(file.key)} variant='contained' style={styles.previewDeleteButton}>remove</Button>*/}
+      {/*    </div>*/}
+      {/*  )})}*/}
+      {/*</div>*/}
+
+      <div style={styles.previewContainer}>
+        {fileUrl.map((url, index) => {
+
+          return (<div key={index} style={styles.previewCard}>
+              <img style={styles.previewImg} height='200' src={url} alt="lot image" />
+              <Button onClick={() => onDeletePreview(url)} variant='contained' style={styles.previewDeleteButton}>remove</Button>
+            </div>
+          )})}
+      </div>
+
+      <h3>Lots list:</h3>
       <div className={classes.gallery}>
         {lots
           .map((item, index) => {
@@ -158,8 +198,11 @@ const ManageLots = () => {
                 })}
                 <p>title: {item[1]?.title}</p>
                 <p>description: {item[1]?.description}</p>
-                {isManageAllowed && <Button variant='contained' onClick={() =>
-                  deleteItem(item[0])}>delete</Button>}
+                {isManageAllowed &&
+                  <div>
+                    <Button className={classes.lotButton} variant='contained' onClick={() => onDeleteItem(item[0])}>delete</Button>
+                    <Button variant='contained' onClick={() => onEditItem(item[0])}>edit</Button>
+                  </div>}
               </div>
             );
           })

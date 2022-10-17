@@ -12,6 +12,7 @@ import { myBase } from './firebase/config';
 import { makeCollectionPath } from './api/general';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { superAdminUid } from './components/adminPanel/login/constants';
+import { PacmanLoader } from 'react-spinners';
 
 export const Context = createContext(null);
 
@@ -48,7 +49,7 @@ function App() {
   const isAdmin = useMemo(() => currentShallowUser?.role?.admin, [currentShallowUser]);
   const isEmployee = useMemo(() => currentShallowUser?.role?.employee, [currentShallowUser]);
   const isSuperAdmin = useMemo(() => user?.uid === superAdminUid, [user]);
-
+console.log(user);
   return (
     <Context.Provider
       value={{
@@ -66,9 +67,9 @@ function App() {
         isEmployee,
       }}
     >
-    <BrowserRouter>
-      <AppRouter />
-    </BrowserRouter>
+      {user ? <BrowserRouter>
+        <AppRouter />
+      </BrowserRouter> : <PacmanLoader color="#36d7b7" />}
     </Context.Provider>
   );
 }
