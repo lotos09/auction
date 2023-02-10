@@ -13,6 +13,7 @@ const RegisterForm = () => {
     {
       initialValues: {
         registerEmail: '',
+        registerPassword: '',
         role: {
           admin: false,
           employee: false,

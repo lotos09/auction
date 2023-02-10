@@ -33,7 +33,8 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'space-between',
     width: 600,
-  }
+  },
+  submitBtn: {alignSelf: 'flex-start', marginTop: '8px'},
 };
 
 
@@ -69,6 +70,9 @@ const ManageLots = () => {
   }
 
   useEffect(() => {
+    if (!token) {
+      return;
+    }
     fetch(makeCollectionPath('lots', token, ''))
       .then(response => response.json())
       .then(data => setLots(Object.entries(data || [])));
@@ -79,6 +83,9 @@ const ManageLots = () => {
       title: '',
       images: '',
       description: '',
+      startPrice: '',
+      minPrice: '',
+      buyoutPrice: '',
     },
     onSubmit: async (e, { resetForm }) => {
       await makeRequest(makeCollectionPath('lots', token, ''),
@@ -155,14 +162,56 @@ const ManageLots = () => {
                   onChange={formik.handleChange}
                   value={formik.values.description}
                   style={{
-                    height: 200,
+                    // height: 200,
+                    marginTop: 8,
+                  }}
+                />
+
+                <TextField
+                  required
+                  id='startPrice'
+                  label='start Price'
+                  name='startPrice'
+                  type="number"
+                  onChange={formik.handleChange}
+                  value={formik.values.startPrice}
+                  style={{
+                    // height: 200,
+                    marginTop: 8,
+                  }}
+                />
+
+                <TextField
+                  required
+                  id='minPrice'
+                  label='min Price'
+                  name='minPrice'
+                  type="number"
+                  onChange={formik.handleChange}
+                  value={formik.values.minPrice}
+                  style={{
+                    // height: 200,
+                    marginTop: 8,
+                  }}
+                />
+
+                <TextField
+                  required
+                  id='buyout'
+                  label='buyout Price'
+                  name='buyoutPrice'
+                  type="number"
+                  onChange={formik.handleChange}
+                  value={formik.values.buyoutPrice}
+                  style={{
+                    // height: 200,
                     marginTop: 8,
                   }}
                 />
               </div>
 
 
-              <Button style={{alignSelf: 'flex-start'}} type='submit'>Submit</Button>
+              <Button style={styles.submitBtn} variant='contained' type='submit'>Submit</Button>
             </form>}
         </div>
       </div>
@@ -193,10 +242,19 @@ const ManageLots = () => {
           .map((item, index) => {
             return (
               <div className={classes.lot} key={index}>
+                <h4>title: {item[1]?.title}</h4>
+                <p>start price: {item[1]?.startPrice}</p>
+                <p>min price: {item[1]?.minPrice}</p>
+                <div style={{display: 'flex'}}>
+                  <p>current price: {item[1]?.currentPrice || item[1].startPrice}</p>
+                  <Button>bid history</Button>
+                </div>
+
+                <p>buyout: {item[1]?.buyoutPrice}</p>
                 {item[1]?.images?.map(image => {
                   return <img style={styles.previewImg} key={image} src={image} alt={image} />;
                 })}
-                <p>title: {item[1]?.title}</p>
+
                 <p>description: {item[1]?.description}</p>
                 {isManageAllowed &&
                   <div>

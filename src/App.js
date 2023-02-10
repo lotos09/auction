@@ -5,6 +5,7 @@ import React, { createContext, useEffect, useMemo, useState } from 'react';
 
 import 'firebase/storage';
 
+
 import firebase from 'firebase/compat';
 import 'firebase/firestore';
 import 'firebase/auth';
@@ -13,11 +14,13 @@ import { makeCollectionPath } from './api/general';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { superAdminUid } from './components/adminPanel/login/constants';
 import { PacmanLoader } from 'react-spinners';
+import { getAuth } from "firebase/auth";
+import { LoginPage } from './components/adminPanel/login/LoginPage';
 
 export const Context = createContext(null);
 
-const auth = firebase.auth();
 const firestore = firebase.firestore();
+const auth = getAuth();
 
 function App() {
   const [user] = useAuthState(auth);
@@ -37,6 +40,9 @@ function App() {
 
   useEffect(() => {
     const token = user?.accessToken;
+    if (!token ) {
+      return;
+    }
     fetch(makeCollectionPath('users', token, ''))
       .then(response => response.json())
       .then(data => {
@@ -49,7 +55,8 @@ function App() {
   const isAdmin = useMemo(() => currentShallowUser?.role?.admin, [currentShallowUser]);
   const isEmployee = useMemo(() => currentShallowUser?.role?.employee, [currentShallowUser]);
   const isSuperAdmin = useMemo(() => user?.uid === superAdminUid, [user]);
-console.log(user);
+  console.log(user);
+
   return (
     <Context.Provider
       value={{
@@ -69,7 +76,7 @@ console.log(user);
     >
       {user ? <BrowserRouter>
         <AppRouter />
-      </BrowserRouter> : <PacmanLoader color="#36d7b7" />}
+      </BrowserRouter> : <LoginPage />}
     </Context.Provider>
   );
 }
