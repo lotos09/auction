@@ -37,7 +37,7 @@ export const LoginPage = () => {
     <>
       {!user &&
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
-          <h2>Log in deploy test</h2>
+          <h2>Log in Page</h2>
           <form onSubmit={loginForm.handleSubmit}>
             <TextField
               required
