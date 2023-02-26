@@ -36,8 +36,8 @@ export const LoginPage = () => {
   return (
     <>
       {!user &&
-        <div style={{textAlign: 'center', marginTop: '50px'}}>
-          <h2>Log in</h2>
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+          <h2>Log in Page</h2>
           <form onSubmit={loginForm.handleSubmit}>
             <TextField
               required
@@ -55,13 +55,13 @@ export const LoginPage = () => {
               name='loginPassword'
               onChange={loginForm.handleChange}
               value={loginForm.values.loginPassword}
-              style={{marginLeft: '20px'}}
+              style={{ marginLeft: '20px' }}
             />
 
-            <Button type='submit' variant="contained" sx={{marginLeft: '20px'}}>Submit</Button>
+            <Button type='submit' variant='contained' sx={{ marginLeft: '20px' }}>Submit</Button>
           </form>
         </div>
-        }
+      }
     </>
   );
 };
