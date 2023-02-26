@@ -242,6 +242,9 @@ const ManageLots = () => {
           .map((item, index) => {
             return (
               <div className={classes.lot} key={index}>
+                <div>
+                  {item[1]?.buyerEmail && <div style={{ color: 'red' }}>buyer: {item[1]?.buyerEmail}</div>}
+                </div>
                 <h4>title: {item[1]?.title}</h4>
                 <p>start price: {item[1]?.startPrice}</p>
                 <p>min price: {item[1]?.minPrice}</p>

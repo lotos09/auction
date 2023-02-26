@@ -55,7 +55,6 @@ function App() {
   const isAdmin = useMemo(() => currentShallowUser?.role?.admin, [currentShallowUser]);
   const isEmployee = useMemo(() => currentShallowUser?.role?.employee, [currentShallowUser]);
   const isSuperAdmin = useMemo(() => user?.uid === superAdminUid, [user]);
-  console.log(user);
 
   return (
     <Context.Provider
