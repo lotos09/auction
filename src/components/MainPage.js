@@ -9,7 +9,7 @@ export const MainPage = () => {
 
   return (
     <>
-      <h2>Test API</h2>
+      <h2>Test deployment</h2>
     </>
   );
 };
